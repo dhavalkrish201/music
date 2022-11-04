@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -6,7 +7,6 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Box,
   Typography,
@@ -101,11 +101,15 @@ const Login = () => {
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="/" variant="body2">
-                  Forgot Password?
+                <Link>
+                  <h6>Forgot Password?</h6>
                 </Link>
               </Grid>
             </Grid>
+            <hr />
+            <Link to="/signup">
+              <h6>Don't have an account</h6>
+            </Link>
           </form>
         </div>
       </Container>

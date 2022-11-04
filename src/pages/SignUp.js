@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -6,7 +7,6 @@ import {
   TextField,
   FormControlLabel,
   Checkbox,
-  Link,
   Grid,
   Box,
   Typography,
@@ -114,8 +114,8 @@ const SignUp = () => {
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="/" variant="body2">
-                  Already have an account? Sign in
+                <Link to="/login">
+                  <h6>Already have an account? Sign in</h6>
                 </Link>
               </Grid>
             </Grid>
