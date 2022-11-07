@@ -30,6 +30,17 @@
   color: white;
 }
 
+.App-dashboard {
+  background-color: black;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -57,6 +68,30 @@
 
 .myfield {
   color: white !important;
+}
+
+#logreg-form .social-btn {
+  font-size: 1.3rem;
+  font-weight: 100;
+  color: #61dafb;
+  width: 200px;
+  height: 56px;
+}
+
+#logreg-form .social-btn:nth-child(1) {
+  margin-bottom: 5px;
+}
+
+#logreg-form .social-btn span {
+  display: none;
+}
+
+#logreg-form .google-btn::after {
+  content: "Google+";
+}
+
+#logreg-form .span {
+  color: black;
 }
 
 @keyframes App-logo-spin {
