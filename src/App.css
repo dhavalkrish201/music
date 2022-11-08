@@ -41,6 +41,18 @@
   color: white;
 }
 
+.Dashboardapp {
+  background-color: white;
+  min-height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  padding-top: 20px;
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -87,7 +99,7 @@
 }
 
 #logreg-form .google-btn::after {
-  content: "Google+";
+  content: "Sign In With Google+";
 }
 
 #logreg-form .span {

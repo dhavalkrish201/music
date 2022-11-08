@@ -1,5 +1,10 @@
 import types from "./actionType";
-import { auth } from "../firebase";
+import { auth, googleAuthProvider } from "../firebase";
+
+import firebase from "firebase/compat/app";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { dialogActionsClasses } from "@mui/material";
 
 const signupStart = () => ({
   type: types.SIGNUP_START,
@@ -33,14 +38,32 @@ const logoutStart = () => ({
   type: types.LOGOUT_START,
 });
 
-const logoutSuccess = (user) => ({
+const logoutSuccess = () => ({
   type: types.LOGOUT_SUCCESS,
-  payload: user,
 });
 
 const logoutFail = (error) => ({
   type: types.LOGOUT_FAIL,
   payload: error,
+});
+
+const googleStart = () => ({
+  type: types.GOOGLE_START,
+});
+
+const googleSuccess = (user) => ({
+  type: types.GOOGLE_SUCCESS,
+  payload: user,
+});
+
+const googleFail = (error) => ({
+  type: types.GOOGLE_FAIL,
+  payload: error,
+});
+
+export const setUser = (user) => ({
+  type: types.SET_USER,
+  payload: user,
 });
 
 const signupInitiate = (email, password, firstName) => {
@@ -69,9 +92,30 @@ export const loginInitiate = (email, password) => {
         dispatch(loginSuccess(user));
       })
       .catch((error) => dispatch(loginFail(error.message)));
-    alert("Wrong Credential");
   };
 };
+
+export const googleInitiate = (email, password) => {
+  return function (dispatch) {
+    dispatch(googleStart());
+
+    auth
+      .signInWithPopup(googleAuthProvider)
+      .then(({ user }) => {
+        dispatch(googleSuccess(user));
+      })
+      .catch((error) => dispatch(googleFail(error.message)));
+  };
+};
+
+// export const logoutInitiate = () => {
+//   return function (dispatch) {
+//     dispatch(logoutStart());
+//     firebase.auth().signOut();
+//     dispatch(logoutSuccess());
+//     dispatch(logoutFail());
+//   };
+// };
 
 export const logoutInitiate = () => {
   return function (dispatch) {
@@ -84,4 +128,4 @@ export const logoutInitiate = () => {
   };
 };
 
-export default { signupInitiate };
+export default signupInitiate;

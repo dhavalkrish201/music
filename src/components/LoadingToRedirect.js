@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const LoadingToRedirect = () => {
-  const [count, setCount] = useState(5);
+  const [count, setCount] = useState(3);
 
   const history = useNavigate();
 
@@ -18,7 +18,7 @@ const LoadingToRedirect = () => {
 
   return (
     <div>
-      <h6>Redirecting you in {count} seconds</h6>
+      <h6>Logout you in {count} seconds</h6>
     </div>
   );
 };

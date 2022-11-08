@@ -56,7 +56,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (currentUser) {
-      history("/dashboard");
+      history("/");
     }
   }, [currentUser, history]);
 

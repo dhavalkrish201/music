@@ -20,10 +20,10 @@ import LoadingToRedirect from "./LoadingToRedirect";
 
 // export default Protected;
 
-const UserRoute = ({ childern, ...rest }) => {
+const UserRoute = ({ childern, component: Component, ...rest }) => {
   const { currentUser } = useSelector((state) => state.user);
 
-  return currentUser ? <Route {...rest} /> : <LoadingToRedirect />;
+  return currentUser ? <Component {...rest} /> : <LoadingToRedirect />;
 };
 
 export default UserRoute;

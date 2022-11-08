@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import {
   Avatar,
   Button,
@@ -14,7 +14,7 @@ import {
   Container,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { loginInitiate } from "../redux/actions";
+import { googleInitiate, loginInitiate } from "../redux/actions";
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -32,11 +32,13 @@ const Login = () => {
 
   useEffect(() => {
     if (currentUser) {
-      history("/dashboard");
+      history("/");
     }
   }, [currentUser, history]);
 
-  const handleGoogleSignIn = () => {};
+  const handleGoogleSignIn = () => {
+    dispatch(googleInitiate());
+  };
   const handleFBSignIn = () => {};
 
   const handleChange = (e) => {
@@ -76,10 +78,15 @@ const Login = () => {
               <LockOutlinedIcon />
             </Avatar>
             <Typography color="primary" component="h1" variant="h5">
-              <Link to="/dashboard">Login</Link>
+              <Link>Login</Link>
             </Typography>
             <div className="social-login">
-              <button className="btn google-btn social-btn" type="button">
+              <button
+                onClick={handleGoogleSignIn}
+                className="btn google-btn social-btn"
+                type="button"
+                style={{ fontSize: "15px", color: "blue" }}
+              >
                 {" "}
                 <span>
                   <i className="fab fa-google-plus-g"> Sign with google+</i>
