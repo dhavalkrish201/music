@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../App.css";
+import { toast } from "react-toast";
+import Swal from "sweetalert2";
+import { Link } from "react-router-dom";
 import {
   AppBar,
   Box,
@@ -23,10 +26,13 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutInitiate } from "../redux/actions";
-import { auth } from "../firebase";
-import { useNavigate } from "react-router-dom";
+import { auth, rootRef } from "../firebase";
+import { useNavigate, useParams } from "react-router-dom";
 import { Lyrics, Movie } from "@mui/icons-material";
-import { addInitiate } from "../redux/actions/dashboard.action";
+import {
+  deleteSOngsInitiate,
+  getSongsInitiate,
+} from "../redux/actions/dashboard.action";
 
 const style = {
   position: "absolute",
@@ -49,7 +55,59 @@ const Dashboard = () => {
     movie: "",
   });
 
+  // UseEffect way to get data
+
+  const [soData, setSoData] = useState({});
+
+  useEffect(() => {
+    rootRef.child("songs").on("value", (snapshot) => {
+      if (snapshot.val() !== null) {
+        setSoData({ ...snapshot.val() });
+      } else {
+        setSoData({});
+      }
+    });
+
+    return () => {
+      setSoData({});
+    };
+  }, []);
+
   const { song, singer, music, lyrics, movie } = songDetails;
+
+  // Handle Update songs functionality
+
+  const [songState, setSongState] = useState(songDetails); //initialState
+  const [data, setData] = useState({});
+  console.log("update data", data);
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    rootRef.child("songs").on("value", (snapshot) => {
+      if (snapshot.val() !== null) {
+        setData({ ...snapshot.val() });
+      } else {
+        setData({});
+      }
+    });
+
+    return () => {
+      setData({});
+    };
+  }, [id]);
+
+  useEffect(() => {
+    if (id) {
+      setSongState({ ...data[id] });
+    } else {
+      setSongState({ ...songDetails });
+    }
+
+    return () => {
+      setSongState({ ...songDetails });
+    };
+  }, [id, data]);
 
   const handleChange = (e) => {
     let { name, value } = e.target;
@@ -61,12 +119,29 @@ const Dashboard = () => {
   const handleClose = () => setOpen(false);
 
   const { currentUser } = useSelector((state) => state.user);
-  const { songs } = useSelector((state) => state.usersongs);
+
+  const [songData, setSongData] = useState({});
+  console.log("songsdata", songData);
+  const songs = useSelector((state) => state.usersongs);
+  console.log("state==>", songs);
+
+  useEffect(() => {
+    dispatch(getSongsInitiate());
+    //setSongData(data);
+  }, []);
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure you want to delete this record")) {
+      dispatch(deleteSOngsInitiate(id));
+    }
+  };
 
   console.log("Res", songs);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  //Handle Logout Functionality
 
   const handleLogout = () => {
     if (currentUser) {
@@ -75,8 +150,38 @@ const Dashboard = () => {
     }
   };
 
-  const SubmitSong = () => {
-    dispatch(addInitiate());
+  //Handle Submit song Functionality
+
+  // const SubmitSong = () => {
+  //   dispatch(addInitiate());
+  // };
+
+  const SubmitAddSong = () => {
+    if (!song || !lyrics || !music || !singer || !movie) {
+      toast.error("Please provide value in each fields");
+    } else {
+      rootRef.child("songs").push(songDetails, (error) => {
+        if (error) {
+          toast.error(error);
+        } else {
+          setSongDetails({
+            song: "",
+            singer: "",
+            music: "",
+            lyrics: "",
+            movie: "",
+          });
+          handleClose(true);
+          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Song Added Successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        }
+      });
+    }
   };
 
   return (
@@ -101,7 +206,7 @@ const Dashboard = () => {
         </Toolbar>
       </AppBar>
       <div className="Dashboardapp">
-        <TableContainer sx={{ width: "700px" }} component={Paper}>
+        <TableContainer sx={{ width: "900px" }} component={Paper}>
           <Typography
             sx={{
               fontSize: "25px",
@@ -131,25 +236,49 @@ const Dashboard = () => {
           >
             <TableHead>
               <TableRow>
+                <TableCell>ID</TableCell>
                 <TableCell>Song Name</TableCell>
                 <TableCell align="right">Singer Name</TableCell>
                 <TableCell align="right">Music Name</TableCell>
                 <TableCell align="right">Lyrics Name</TableCell>
                 <TableCell align="right">Movie Name</TableCell>
+                <TableCell align="right">Update Song</TableCell>
+                <TableCell align="right">Delete Song</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              <TableRow
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  Test
-                </TableCell>
-                <TableCell align="right">Test1</TableCell>
-                <TableCell align="right">Test2</TableCell>
-                <TableCell align="right">Test3</TableCell>
-                <TableCell align="right">Test4</TableCell>
-              </TableRow>
+              {Object.keys(soData).map((id, index) => {
+                return (
+                  <TableRow
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row" key={id}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell align="right">{soData[id].song}</TableCell>
+                    <TableCell align="right">{soData[id].singer}</TableCell>
+                    <TableCell align="right">{soData[id].music}</TableCell>
+                    <TableCell align="right">{soData[id].lyrics}</TableCell>
+                    <TableCell align="right">{soData[id].movie}</TableCell>
+                    <TableCell align="right">
+                      <Link to={`/update/${id}`}>
+                        {" "}
+                        <Button onClick={handleOpen} variant="outlined">
+                          Update
+                        </Button>
+                      </Link>
+                    </TableCell>
+                    <TableCell align="right">
+                      <Button
+                        variant="outlined"
+                        onClick={() => handleDelete(id)}
+                      >
+                        Delete
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -189,7 +318,7 @@ const Dashboard = () => {
                     id="song"
                     label="Song Name"
                     name="song"
-                    value={song}
+                    value={song || ""}
                     autoComplete="song"
                     onChange={handleChange}
                   />
@@ -203,7 +332,7 @@ const Dashboard = () => {
                     label="Singer Name"
                     type="text"
                     id="singer"
-                    value={singer}
+                    value={singer || ""}
                     autoComplete="singer"
                     onChange={handleChange}
                   />
@@ -217,7 +346,7 @@ const Dashboard = () => {
                     label="Music Name"
                     type="text"
                     id="music"
-                    value={music}
+                    value={music || ""}
                     autoComplete="music"
                     onChange={handleChange}
                   />
@@ -231,7 +360,7 @@ const Dashboard = () => {
                     label="Lyrics Name"
                     type="text"
                     id="lyrics"
-                    value={lyrics}
+                    value={lyrics || ""}
                     autoComplete="lyrics"
                     onChange={handleChange}
                   />
@@ -245,7 +374,7 @@ const Dashboard = () => {
                     label="Movie Name"
                     type="text"
                     id="movie"
-                    value={movie}
+                    value={movie || ""}
                     autoComplete="movie"
                     onChange={handleChange}
                   />
@@ -257,7 +386,7 @@ const Dashboard = () => {
                 variant="contained"
                 color="primary"
                 className="mysubmit"
-                onClick={SubmitSong}
+                onClick={SubmitAddSong}
               >
                 Submit
               </Button>

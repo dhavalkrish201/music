@@ -26,6 +26,11 @@ function App() {
   return (
     <Routes>
       <Route exact path="/" element={<UserRoute component={Dashboard} />} />
+      <Route
+        exact
+        path="/update/:id"
+        element={<UserRoute component={Dashboard} />}
+      />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />
     </Routes>
