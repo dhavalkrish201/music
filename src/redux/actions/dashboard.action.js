@@ -7,6 +7,10 @@ export const DELETE_SONGS_START = "DELETE_SONGS_START";
 export const DELETE_SONGS_SUCCESS = "DELETE_SONGS_SUCCESS";
 export const DELETE_SONGS_FAIL = "DELETE_SONGS_FAIL";
 
+export const ADD_SONGS_START = "ADD_SONGS_START";
+export const ADD_SONGS_SUCCESS = "ADD_SONGS_SUCCESS";
+export const ADD_SONGS_FAIL = "ADD_SONGS_FAIL";
+
 export const UPDATE_SONGS_START = "UPDATE_SONGS_START";
 export const UPDATE_SONGS_SUCCESS = "UPDATE_SONGS_SUCCESS";
 export const UPDATE_SONGS_FAIL = "UPDATE_SONGS_FAIL";
@@ -42,13 +46,24 @@ const deleteSongsFail = () => ({
   type: "DELETE_SONGS_FAIL",
 });
 
+const addSongsStart = () => ({
+  type: "ADD_SONGS_START",
+});
+
+const addSongsSuccess = () => ({
+  type: "ADD_SONGS_SUCCESS",
+});
+
+const addSongsFail = () => ({
+  type: "ADD_SONGS_FAIL",
+});
+
 const updateSongsStart = () => ({
   type: "UPDATE_SONGS_START",
 });
 
-const updateSongsSuccess = (songs) => ({
+const updateSongsSuccess = () => ({
   type: "UPDATE_SONGS_SUCCESS",
-  payload: songs,
 });
 
 const updateSongsFail = () => ({
@@ -143,10 +158,22 @@ export const deleteSOngsInitiate = (id) => {
   };
 };
 
-export const editSongs = (song, id) => {
+export const addNewSong = (newsong) => {
+  return function (dispatch) {
+    dispatch(addSongsStart());
+    rootRef.child("songs").push(newsong, (error) => {
+      dispatch(addSongsSuccess());
+      if (error) {
+        dispatch(addSongsFail(error));
+      }
+    });
+  };
+};
+
+export const editSongs = (editsong, id) => {
   return function (dispatch) {
     dispatch(updateSongsStart());
-    rootRef.child(`songs/${id}`).set(song, (error) => {
+    rootRef.child(`songs/${id}`).set(editsong, (error) => {
       dispatch(updateSongsSuccess());
       if (error) {
         dispatch(updateSongsFail(error));

@@ -6,9 +6,9 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import UserRoute from "./components/UserRoute";
 import { useDispatch } from "react-redux";
-import Protected from "./components/UserRoute";
 import { auth } from "./firebase";
 import { setUser } from "./redux/actions";
+import Playlist from "./pages/Playlist";
 
 function App() {
   const dispatch = useDispatch();
@@ -30,6 +30,16 @@ function App() {
         exact
         path="/update/:id"
         element={<UserRoute component={Dashboard} />}
+      />
+      <Route
+        exact
+        path="/playlist"
+        element={<UserRoute component={Playlist} />}
+      />
+      <Route
+        exact
+        path="/playlist/update/:id"
+        element={<UserRoute component={Playlist} />}
       />
       <Route path="/signup" element={<SignUp />} />
       <Route path="/login" element={<Login />} />

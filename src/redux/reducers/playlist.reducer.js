@@ -1,107 +1,107 @@
 const initialState = {
-  songs: [],
+  playlists: [],
   loading: false,
   error: null,
 };
 
-const songsReducer = (state = initialState, action) => {
+const playlistReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "GET_SONGS_START":
+    case "GET_PLAYLIST_START":
       return {
         ...state,
         loading: true,
       };
 
-    case "GET_SONGS_SUCCESS":
-      const songs = [...state.songs];
-      songs.push(action.payload);
-      state.songs = songs;
+    case "GET_PLAYLIST_SUCCESS":
+      const playlists = [...state.songs];
+      playlists.push(action.payload);
+      state.playlists = playlists;
       return {
         ...state,
         loading: false,
       };
 
-    case "GET_SONGS_FAIL":
+    case "GET_PLAYLIST_FAIL":
       return {
         ...state,
         loading: false,
         songs: action.payload,
       };
 
-    case "DELETE_SONGS_START":
+    case "DELETE_PLAYLIST_START":
       return {
         ...state,
         loading: true,
       };
 
-    case "DELETE_SONGS_SUCCESS":
+    case "DELETE_PLAYLIST_SUCCESS":
       return {
         ...state,
         loading: false,
       };
 
-    case "DELETE_SONGS_FAIL":
+    case "DELETE_PLAYLIST_FAIL":
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    case "ADD_SONGS":
+    case "ADD_PLAYLIST":
       return {
         ...state,
         songs: action.payload,
       };
-    case "FETCH_SONGS":
-      return {
-        ...state,
-        songs: action.payload,
-      };
-
-    case "UPDATE_SONGS":
+    case "FETCH_PLAYLIST":
       return {
         ...state,
         songs: action.payload,
       };
 
-    case "DELETE_SONGS":
+    case "UPDATE_PLAYLIST":
+      return {
+        ...state,
+        songs: action.payload,
+      };
+
+    case "DELETE_PLAYLIST":
       return {
         ...state,
         loading: true,
       };
 
-    case "ADD_SONGS_START":
+    case "ADD_PLAYLIST_START":
       return {
         ...state,
         loading: true,
       };
 
-    case "ADD_SONGS_SUCCESS":
+    case "ADD_PLAYLIST_SUCCESS":
       return {
         ...state,
         loading: false,
       };
 
-    case "ADD_SONGS_FAIL":
+    case "ADD_PLAYLIST_FAIL":
       return {
         ...state,
         loading: false,
         error: action.payload,
       };
 
-    case "UPDATE_SONGS_START":
+    case "UPDATE_PLAYLIST_START":
       return {
         ...state,
         loading: true,
       };
 
-    case "UPDATE_SONGS_SUCCESS":
+    case "UPDATE_PLAYLIST_SUCCESS":
       return {
         ...state,
         loading: false,
       };
 
-    case "UPDATE_SONGS_FAIL":
+    case "UPDATE_PLAYLIST_FAIL":
       return {
         ...state,
         loading: false,
@@ -113,4 +113,4 @@ const songsReducer = (state = initialState, action) => {
   }
 };
 
-export default songsReducer;
+export default playlistReducer;
