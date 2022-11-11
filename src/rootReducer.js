@@ -6,7 +6,7 @@ import playlistReducer from "./redux/reducers/playlist.reducer";
 const rootReducer = combineReducers({
   user: userReducer,
   usersongs: songsReducer,
-  myplaylist: playlistReducer,
+  playlist: playlistReducer,
 });
 
 export default rootReducer;

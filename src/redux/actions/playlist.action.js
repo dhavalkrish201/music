@@ -15,6 +15,10 @@ export const UPDATE_PLAYLIST_START = "UPDATE_PLAYLIST_START";
 export const UPDATE_PLAYLIST_SUCCESS = "UPDATE_PLAYLIST_SUCCESS";
 export const UPDATE_PLAYLIST_FAIL = "UPDATE_PLAYLIST_FAIL";
 
+export const ADD_SONG_PLAYLIST = "ADD_SONG_PLAYLIST";
+export const UPDATE_SONG_PLAYLIST = "UPDATE_SONG_PLAYLIST";
+export const DELETE_SONG_PLAYLIST = "DELETE_SONG_PLAYLIST";
+
 export const ADD_PLAYLIST = "ADD_PLAYLIST";
 export const FETCH_PLAYLIST = "FETCH_PLAYLIST";
 export const UPDATE_PLAYLIST = "UPDATE_PLAYLIST";
@@ -24,9 +28,9 @@ const getPlaylistStart = () => ({
   type: "GET_PLAYLIST_START",
 });
 
-const getPlaylistSuccess = (songs) => ({
+const getPlaylistSuccess = (playlist) => ({
   type: "GET_PLAYLIST_SUCCESS",
-  payload: songs,
+  payload: playlist,
 });
 
 const getPlaylistFail = () => ({
@@ -67,6 +71,19 @@ const updatePlaylistSuccess = () => ({
 
 const updatePlaylistFail = () => ({
   type: "UPDATE_PLAYLIST_FAIL",
+});
+
+const addPlaylistSong = () => ({
+  type: "ADD_SONG_PLAYLIST",
+});
+
+const updatePlaylistSuccessSong = (playlist) => ({
+  type: "UPDATE_SONG_PLAYLIST",
+  payload: playlist,
+});
+
+const deletePlaylistFailSong = () => ({
+  type: "DELETE_SONG_PLAYLIST",
 });
 
 // const addPlaylist = (usersongs) => ({
@@ -136,7 +153,7 @@ export const getPlaylistInitiate = () => {
         if (snapshot.val() !== null) {
           dispatch(getPlaylistSuccess(snapshot.val()));
         } else {
-          dispatch(getPlaylistSuccess(snapshot.val()));
+          dispatch(getPlaylistSuccess({}));
         }
       } catch (error) {
         dispatch(getPlaylistFail(error));
@@ -164,6 +181,18 @@ export const addNewPlaylist = (newplaylist) => {
       dispatch(addPlaylistSuccess());
       if (error) {
         dispatch(addPlaylistFail(error));
+      }
+    });
+  };
+};
+
+export const addSongPlaylist = (newplaylist) => {
+  return function (dispatch) {
+    dispatch(addPlaylistSong());
+    rootRef.child("playlist").push(newplaylist, (error) => {
+      dispatch(updatePlaylistSuccessSong());
+      if (error) {
+        dispatch(deletePlaylistFailSong(error));
       }
     });
   };

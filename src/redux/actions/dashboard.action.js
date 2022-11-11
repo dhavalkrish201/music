@@ -137,7 +137,7 @@ export const getSongsInitiate = () => {
         if (snapshot.val() !== null) {
           dispatch(getSongsSuccess(snapshot.val()));
         } else {
-          dispatch(getSongsSuccess(snapshot.val()));
+          dispatch(getSongsSuccess({}));
         }
       } catch (error) {
         dispatch(getSongsFail(error));

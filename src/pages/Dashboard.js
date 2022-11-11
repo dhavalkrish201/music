@@ -4,6 +4,7 @@ import "../App.css";
 import { toast } from "react-toast";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
 import {
   AppBar,
   Box,
@@ -30,6 +31,10 @@ import {
   ListItemText,
   Divider,
   Drawer,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
@@ -39,6 +44,7 @@ import { logoutInitiate } from "../redux/actions";
 import { auth, rootRef } from "../firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { Lyrics, Movie } from "@mui/icons-material";
+import { addSongPlaylist } from "../redux/actions/playlist.action";
 import {
   deleteSOngsInitiate,
   addNewSong,
@@ -46,6 +52,10 @@ import {
   editSongs,
 } from "../redux/actions/dashboard.action";
 import Navbar from "../components/Navbar";
+import {
+  addNewPlaylist,
+  getPlaylistInitiate,
+} from "../redux/actions/playlist.action";
 
 const style = {
   position: "absolute",
@@ -129,6 +139,10 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [playlistOpen, setPlaylistOpen] = useState(false);
+  const playlistHandleOpen = () => setPlaylistOpen(true);
+  const playlistHandleClose = () => setPlaylistOpen(false);
 
   const { currentUser } = useSelector((state) => state.user);
 
@@ -220,7 +234,48 @@ const Dashboard = () => {
   //   }
   // };
 
-  //SideMenu
+  // Manage Playlist Details
+
+  const { playlist: playlistData } = useSelector((state) => state.playlist);
+  console.log("Dashboard Playlist", playlistData);
+
+  useEffect(() => {
+    dispatch(getPlaylistInitiate());
+  }, []);
+
+  const [sid, setSid] = useState(soData[id]);
+
+  console.log("UUUU", sid);
+
+  const [test, setTest] = useState(soData);
+
+  console.log("testdata", test);
+
+  const SubmitPlaylistSong = (e, obj) => {
+    e.preventDefault();
+
+    if (isEmpty(id)) {
+      // rootRef.child("songs").push(initialState, (error) => {
+      //   if (error) {
+      //     console.log(error);
+      //   }
+      // });
+      dispatch(addSongPlaylist(soData));
+      setSid(playlistData);
+      handleClose(true);
+    }
+    //  else {
+    //   dispatch(e(initialState, id));
+    //   handleClose(true);
+    //   navigate("/playlist");
+
+    //   // rootRef.child(`songs/${id}`).set(initialState, (error) => {
+    //   //   if (error) {
+    //   //     console.log(error);
+    //   //   }
+    //   // });
+    // }
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -262,6 +317,7 @@ const Dashboard = () => {
                 <TableCell align="right">Music Name</TableCell>
                 <TableCell align="right">Lyrics Name</TableCell>
                 <TableCell align="right">Movie Name</TableCell>
+                <TableCell align="right">Playlist</TableCell>
                 <TableCell align="right">Update Song</TableCell>
                 <TableCell align="right">Delete Song</TableCell>
               </TableRow>
@@ -280,6 +336,14 @@ const Dashboard = () => {
                     <TableCell align="right">{soData[id].music}</TableCell>
                     <TableCell align="right">{soData[id].lyrics}</TableCell>
                     <TableCell align="right">{soData[id].movie}</TableCell>
+                    <TableCell align="right">
+                      <Button
+                        onClick={playlistHandleOpen}
+                        sx={{ backgroundColor: "blue" }}
+                      >
+                        <AddIcon sx={{ color: "white" }} />
+                      </Button>
+                    </TableCell>
                     <TableCell align="right">
                       <Link to={`/update/${id}`}>
                         {" "}
@@ -409,6 +473,73 @@ const Dashboard = () => {
                 onClick={SubmitAddSong}
               >
                 {handleOpen ? "Update" : "Submit"}
+              </Button>
+            </form>
+          </Box>
+        </Modal>
+      </div>
+
+      <div>
+        <Modal
+          open={playlistOpen}
+          onClose={playlistHandleClose}
+          aria-labelledby="modal-modal-title1"
+          aria-describedby="modal-modal-description1"
+        >
+          <Box sx={style}>
+            <Typography
+              sx={{
+                fontSize: "25px",
+
+                color: "blue",
+
+                fontStyle: "italic",
+                fontFamily: "fantasy",
+              }}
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            >
+              Select Playlist
+            </Typography>
+
+            <form className="myform" noValidate>
+              <Grid sx={{ paddingTop: "20px" }} container spacing={2}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel id="demo-simple-select-label">
+                      Select Playlist
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={playlistData[id]}
+                      label="Age"
+                      onChange={handleChange}
+                    >
+                      {Object.keys(playlistData).map((id, item) => {
+                        console.log("playlist data-->", playlistData[id], item);
+
+                        return (
+                          <MenuItem value={id}>
+                            {playlistData[id].playlistName}
+                          </MenuItem>
+                        );
+                      })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+
+                <Grid item xs={12}></Grid>
+              </Grid>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                className="mysubmit"
+                onClick={SubmitPlaylistSong}
+              >
+                Add
               </Button>
             </form>
           </Box>

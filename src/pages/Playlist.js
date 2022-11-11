@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Lyrics, Movie } from "@mui/icons-material";
 import { isEmpty } from "lodash";
+import AddIcon from "@mui/icons-material/Add";
 import {
   deleteSOngsInitiate,
   getSongsInitiate,
@@ -15,6 +16,7 @@ import {
   addNewPlaylist,
   editPlaylist,
   deletePlaylistInitiate,
+  getPlaylistInitiate,
 } from "../redux/actions/playlist.action";
 import {
   AppBar,
@@ -62,25 +64,29 @@ const Playlist = () => {
 
   const [playlistDetails, setPlaylistDetails] = useState({
     playlistName: "",
+    playlistSong: "",
   });
 
   // UseEffect way to get data
 
-  const [soData, setSoData] = useState({});
-  console.log("soData", soData);
+  // useEffect(() => {
+  //   rootRef.child("playlist").on("value", (snapshot) => {
+  //     if (snapshot.val() !== null) {
+  //       setSoData({ ...snapshot.val() });
+  //     } else {
+  //       setSoData({});
+  //     }
+  //   });
+
+  //   return () => {
+  //     setSoData({});
+  //   };
+  // }, []);
+
+  const { playlist: soData } = useSelector((state) => state.playlist);
 
   useEffect(() => {
-    rootRef.child("playlist").on("value", (snapshot) => {
-      if (snapshot.val() !== null) {
-        setSoData({ ...snapshot.val() });
-      } else {
-        setSoData({});
-      }
-    });
-
-    return () => {
-      setSoData({});
-    };
+    dispatch(getPlaylistInitiate());
   }, []);
 
   // Handle Update songs functionality
@@ -133,11 +139,9 @@ const Playlist = () => {
 
   const [playlistData, setSongData] = useState({});
   console.log("songsdata", playlistData);
-  const playlist = useSelector((state) => state.myplaylist);
-  console.log("state==>", playlist);
 
   useEffect(() => {
-    dispatch(getSongsInitiate());
+    dispatch(getPlaylistInitiate());
     //setSongData(data);
   }, []);
 
@@ -146,8 +150,6 @@ const Playlist = () => {
       dispatch(deletePlaylistInitiate(id));
     }
   };
-
-  console.log("Res", playlist);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
