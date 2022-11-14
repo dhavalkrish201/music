@@ -73,8 +73,9 @@ const updatePlaylistFail = () => ({
   type: "UPDATE_PLAYLIST_FAIL",
 });
 
-const addPlaylistSong = () => ({
+const addPlaylistSong = (data) => ({
   type: "ADD_SONG_PLAYLIST",
+  payload: data,
 });
 
 const updatePlaylistSuccessSong = (playlist) => ({
@@ -85,65 +86,6 @@ const updatePlaylistSuccessSong = (playlist) => ({
 const deletePlaylistFailSong = () => ({
   type: "DELETE_SONG_PLAYLIST",
 });
-
-// const addPlaylist = (usersongs) => ({
-//   type: "ADD_PLAYLIST",
-//   payload: usersongs,
-// });
-
-// const fetchPlaylist = (usersongs) => ({
-//   type: "FETCH_PLAYLIST",
-//   payload: usersongs,
-//   loading: false,
-// });
-
-// const updatePlaylist = (user) => ({
-//   type: "UPDATE_PLAYLIST",
-//   payload: user,
-// });
-
-// const deletePlaylist = (usersongs) => ({
-//   type: "DELETE_PLAYLIST",
-//   payload: usersongs,
-// });
-
-// const songsFail = (error) => ({
-//   type: "SONG_FAIL",
-//   payload: error,
-// });
-
-// export const songInitiate = () => async (dispatch, action) => {
-//   try {
-//     let res = await db.collection("SongsDetails").get();
-//     console.log("res", res);
-//     dispatch(fetchSongs());
-//   } catch (error) {
-//     console.log("error", error);
-//     dispatch(songsFail());
-//   }
-// };
-
-// export const addInitiate = (project) => {
-//   return (dispatch, { getFireStore }) => {
-//     const firestore = getFireStore();
-//     firestore
-//       .collection("SongsDetails")
-//       .add({
-//         ...project,
-//         song: "Ram",
-//         singer: "Sonu Nigam",
-//         music: "javed ali",
-//         lyrics: "dhaval",
-//         movie: "Jay shree krishna",
-//       })
-//       .then(() => {
-//         dispatch(addSongs(project));
-//       })
-//       .catch((error) => {
-//         dispatch(songsFail(error));
-//       });
-//   };
-// };
 
 export const getPlaylistInitiate = () => {
   return function (dispatch) {
@@ -186,15 +128,27 @@ export const addNewPlaylist = (newplaylist) => {
   };
 };
 
-export const addSongPlaylist = (newplaylist) => {
+export const addSongPlaylist = (newplaylist, songs) => {
+  console.log("newplaylist", newplaylist);
+  console.log("songID", songs);
   return function (dispatch) {
-    dispatch(addPlaylistSong());
-    rootRef.child("playlist").push(newplaylist, (error) => {
-      dispatch(updatePlaylistSuccessSong());
-      if (error) {
-        dispatch(deletePlaylistFailSong(error));
-      }
-    });
+    // dispatch(
+    //   addPlaylistSong({
+    //     playlistID: Object.keys(newplaylist)[0],
+    //     songID: Object.keys(songs)[0],
+    //   })
+    // );
+    newplaylist.songs = [Object.keys(songs)[0]];
+    rootRef
+      .child(`playlist/${Object.keys(newplaylist)[0]}`)
+      .set(newplaylist, (error) => {
+        dispatch(
+          addPlaylistSong({
+            playlistID: Object.keys(newplaylist)[0],
+            songID: Object.keys(songs)[0],
+          })
+        );
+      });
   };
 };
 
@@ -209,10 +163,3 @@ export const editPlaylist = (editplaylist, id) => {
     });
   };
 };
-
-// export const createSongs = (id) => {
-//   return function (dispatch) {
-//     dispatch(deleteSongsStart());
-//     rootRef.child("songs").push();
-//   };
-// };

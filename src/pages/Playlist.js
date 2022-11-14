@@ -67,22 +67,6 @@ const Playlist = () => {
     playlistSong: "",
   });
 
-  // UseEffect way to get data
-
-  // useEffect(() => {
-  //   rootRef.child("playlist").on("value", (snapshot) => {
-  //     if (snapshot.val() !== null) {
-  //       setSoData({ ...snapshot.val() });
-  //     } else {
-  //       setSoData({});
-  //     }
-  //   });
-
-  //   return () => {
-  //     setSoData({});
-  //   };
-  // }, []);
-
   const { playlist: soData } = useSelector((state) => state.playlist);
 
   useEffect(() => {
@@ -154,72 +138,18 @@ const Playlist = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //Handle Logout Functionality
-
-  // const handleLogout = () => {
-  //   if (currentUser) {
-  //     dispatch(logoutInitiate());
-  //     navigate("/login");
-  //   }
-  // };
-
-  //Handle Submit song Functionality
-
-  // const SubmitSong = () => {
-  //   dispatch(addInitiate());
-  // };
-
   const SubmitAddPlaylist = (e, obj) => {
     e.preventDefault();
     console.log("initialState", initialState);
     if (isEmpty(id)) {
-      // rootRef.child("songs").push(initialState, (error) => {
-      //   if (error) {
-      //     console.log(error);
-      //   }
-      // });
       dispatch(addNewPlaylist(initialState));
       handleClose(true);
     } else {
       dispatch(editPlaylist(initialState, id));
       handleClose(true);
       navigate("/playlist");
-
-      // rootRef.child(`songs/${id}`).set(initialState, (error) => {
-      //   if (error) {
-      //     console.log(error);
-      //   }
-      // });
     }
   };
-
-  // const SubmitAddPlaylist = () => {
-  //   if (!song || !lyrics || !music || !singer || !movie) {
-  //     toast.error("Please provide value in each fields");
-  //   } else {
-  //     rootRef.child("songs").push(playlistDetails, (error) => {
-  //       if (error) {
-  //         toast.error(error);
-  //       } else {
-  //         setPlaylistDetails({
-  //           song: "",
-  //           singer: "",
-  //           music: "",
-  //           lyrics: "",
-  //           movie: "",
-  //         });
-  //         handleClose(true);
-  //         Swal.fire({
-  //           position: "center",
-  //           icon: "success",
-  //           title: "Song Added Successfully",
-  //           showConfirmButton: false,
-  //           timer: 1500,
-  //         });
-  //       }
-  //     });
-  //   }
-  // };
 
   //SideMenu
 

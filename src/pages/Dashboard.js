@@ -141,7 +141,12 @@ const Dashboard = () => {
   const handleClose = () => setOpen(false);
 
   const [playlistOpen, setPlaylistOpen] = useState(false);
-  const playlistHandleOpen = () => setPlaylistOpen(true);
+  const [selectedSongId, setSelectedSongId] = useState();
+
+  const playlistHandleOpen = (id) => {
+    setSelectedSongId(id);
+    setPlaylistOpen(true);
+  };
   const playlistHandleClose = () => setPlaylistOpen(false);
 
   const { currentUser } = useSelector((state) => state.user);
@@ -167,72 +172,18 @@ const Dashboard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  //Handle Logout Functionality
-
-  // const handleLogout = () => {
-  //   if (currentUser) {
-  //     dispatch(logoutInitiate());
-  //     navigate("/login");
-  //   }
-  // };
-
-  //Handle Submit song Functionality
-
-  // const SubmitSong = () => {
-  //   dispatch(addInitiate());
-  // };
-
   const SubmitAddSong = (e, obj) => {
     e.preventDefault();
     console.log("initialState", initialState);
     if (isEmpty(id)) {
-      // rootRef.child("songs").push(initialState, (error) => {
-      //   if (error) {
-      //     console.log(error);
-      //   }
-      // });
       dispatch(addNewSong(initialState));
       handleClose(true);
     } else {
       dispatch(editSongs(initialState, id));
       handleClose(true);
       navigate("/");
-
-      // rootRef.child(`songs/${id}`).set(initialState, (error) => {
-      //   if (error) {
-      //     console.log(error);
-      //   }
-      // });
     }
   };
-
-  // const SubmitAddSong = () => {
-  //   if (!song || !lyrics || !music || !singer || !movie) {
-  //     toast.error("Please provide value in each fields");
-  //   } else {
-  //     rootRef.child("songs").push(songDetails, (error) => {
-  //       if (error) {
-  //         toast.error(error);
-  //       } else {
-  //         setSongDetails({
-  //           song: "",
-  //           singer: "",
-  //           music: "",
-  //           lyrics: "",
-  //           movie: "",
-  //         });
-  //         handleClose(true);
-  //         Swal.fire({
-  //           position: "center",
-  //           icon: "success",
-  //           title: "Song Added Successfully",
-  //           showConfirmButton: false,
-  //           timer: 1500,
-  //         });
-  //       }
-  //     });
-  //   }
-  // };
 
   // Manage Playlist Details
 
@@ -243,38 +194,12 @@ const Dashboard = () => {
     dispatch(getPlaylistInitiate());
   }, []);
 
-  const [sid, setSid] = useState(soData[id]);
-
-  console.log("UUUU", sid);
-
-  const [test, setTest] = useState(soData);
-
-  console.log("testdata", test);
-
-  const SubmitPlaylistSong = (e, obj) => {
-    e.preventDefault();
-
+  const SubmitPlaylistSong = (id) => {
+    console.log("id--->", id);
+    dispatch(addSongPlaylist(data, id));
     if (isEmpty(id)) {
-      // rootRef.child("songs").push(initialState, (error) => {
-      //   if (error) {
-      //     console.log(error);
-      //   }
-      // });
-      dispatch(addSongPlaylist(soData));
-      setSid(playlistData);
       handleClose(true);
     }
-    //  else {
-    //   dispatch(e(initialState, id));
-    //   handleClose(true);
-    //   navigate("/playlist");
-
-    //   // rootRef.child(`songs/${id}`).set(initialState, (error) => {
-    //   //   if (error) {
-    //   //     console.log(error);
-    //   //   }
-    //   // });
-    // }
   };
 
   return (
@@ -338,7 +263,7 @@ const Dashboard = () => {
                     <TableCell align="right">{soData[id].movie}</TableCell>
                     <TableCell align="right">
                       <Button
-                        onClick={playlistHandleOpen}
+                        onClick={() => playlistHandleOpen(id)}
                         sx={{ backgroundColor: "blue" }}
                       >
                         <AddIcon sx={{ color: "white" }} />
@@ -537,7 +462,10 @@ const Dashboard = () => {
                 variant="contained"
                 color="primary"
                 className="mysubmit"
-                onClick={SubmitPlaylistSong}
+                onClick={() => {
+                  console.log("KKKKKKK", selectedSongId);
+                  SubmitPlaylistSong(selectedSongId);
+                }}
               >
                 Add
               </Button>

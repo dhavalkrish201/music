@@ -2,6 +2,7 @@ const initialState = {
   songs: [],
   loading: false,
   error: null,
+  playlist: [],
 };
 
 const songsReducer = (state = initialState, action) => {
@@ -102,6 +103,30 @@ const songsReducer = (state = initialState, action) => {
       };
 
     case "UPDATE_SONGS_FAIL":
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+
+    case "ADD_SONG_PLAYLIST":
+      return {
+        ...state,
+        loading: true,
+        playlist: state.songs.filter(
+          (playlist) => playlist.id !== action.payload
+        ),
+        songs: [action.payload, state.playlist],
+      };
+
+    case "UPDATE_SONG_PLAYLIST":
+      return {
+        ...state,
+        loading: false,
+        singleplaylist: action.payload,
+      };
+
+    case "DELETE_SONG_PLAYLIST":
       return {
         ...state,
         loading: false,

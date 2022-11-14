@@ -46,18 +46,6 @@ const Login = () => {
     setUser({ ...user, [name]: value });
   };
 
-  // const login = () => {
-  //   localStorage.setItem("login", true);
-  //   history("/dashboard");
-  // };
-
-  // useEffect(() => {
-  //   let login = localStorage.getItem("login");
-  //   if (login) {
-  //     history("/dashboard");
-  //   }
-  // });
-
   const submitLogin = (e) => {
     e.preventDefault();
 

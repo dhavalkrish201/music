@@ -1,5 +1,7 @@
+import { values } from "lodash";
+
 const initialState = {
-  playlist: {},
+  playlist: [],
   loading: false,
   error: null,
   singleplaylist: {},
@@ -8,20 +10,19 @@ const initialState = {
 const playlistReducer = (state = initialState, action) => {
   switch (action.type) {
     case "GET_PLAYLIST_START":
-    case "ADD_SONG_PLAYLIST":
       return {
         ...state,
         loading: true,
       };
 
-    // case "GET_PLAYLIST_SUCCESS":
-    //   const playlists = [...state.songs];
-    //   playlists.push(action.payload);
-    //   state.playlists = playlists;
-    //   return {
-    //     ...state,
-    //     loading: false,
-    //   };
+    case "ADD_SONG_PLAYLIST":
+      console.log("testnewdata--->", action);
+      console.log("Playlist data by shankar--->", values(state.playlist));
+      const playlistIndex = state.playlist[action.payload.playlistID];
+
+      return {
+        ...state,
+      };
 
     case "GET_PLAYLIST_SUCCESS":
       return {
