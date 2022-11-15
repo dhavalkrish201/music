@@ -17,6 +17,7 @@ import {
   editPlaylist,
   deletePlaylistInitiate,
   getPlaylistInitiate,
+  getPlaylistSongInitiate,
 } from "../redux/actions/playlist.action";
 import {
   AppBar,
@@ -44,6 +45,10 @@ import {
   ListItemText,
   Divider,
   Drawer,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
@@ -62,6 +67,28 @@ const Playlist = () => {
     p: 4,
   };
 
+  const style1 = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 1000,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const [playlistOpen, setPlaylistOpen] = useState(false);
+  const [selectedSongId, setSelectedSongId] = useState();
+
+  const playlistHandleOpen = (id) => {
+    setSelectedSongId(id);
+    setPlaylistOpen(true);
+  };
+
+  const playlistHandleClose = () => setPlaylistOpen(false);
+
   const [playlistDetails, setPlaylistDetails] = useState({
     playlistName: "",
     playlistSong: "",
@@ -71,6 +98,10 @@ const Playlist = () => {
 
   useEffect(() => {
     dispatch(getPlaylistInitiate());
+  }, []);
+
+  useEffect(() => {
+    dispatch(getPlaylistSongInitiate());
   }, []);
 
   // Handle Update songs functionality
@@ -190,6 +221,7 @@ const Playlist = () => {
                 <TableCell>Sr No</TableCell>
                 <TableCell align="right">Playlist Name</TableCell>
                 <TableCell align="right">Update Playlist</TableCell>
+                <TableCell align="right">View</TableCell>
                 <TableCell align="right">Delete Playlist</TableCell>
               </TableRow>
             </TableHead>
@@ -213,6 +245,15 @@ const Playlist = () => {
                           Update
                         </Button>
                       </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        onClick={() => playlistHandleOpen()}
+                        onClose={() => playlistHandleClose()}
+                        sx={{ backgroundColor: "blue" }}
+                      >
+                        <AddIcon sx={{ color: "white" }} />
+                      </Button>
                     </TableCell>
                     <TableCell align="right">
                       <Button
@@ -282,6 +323,83 @@ const Playlist = () => {
                 {handleOpen ? "Update" : "Submit"}
               </Button>
             </form>
+          </Box>
+        </Modal>
+      </div>
+
+      <div>
+        <Modal
+          open={playlistOpen}
+          onClose={playlistHandleClose}
+          aria-labelledby="modal-modal-title1"
+          aria-describedby="modal-modal-description1"
+        >
+          <Box sx={style1}>
+            <Typography
+              sx={{
+                fontSize: "25px",
+
+                color: "blue",
+
+                fontStyle: "italic",
+                fontFamily: "fantasy",
+              }}
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            >
+              View Song
+            </Typography>
+
+            <TableContainer sx={{ width: "900px" }} component={Paper}>
+              <Typography
+                sx={{
+                  fontSize: "25px",
+                  textAlign: "center",
+                  color: "blue",
+                  paddingBottom: "30px",
+                  fontStyle: "italic",
+                  fontFamily: "fantasy",
+                }}
+              >
+                PlayList
+              </Typography>
+
+              <Table
+                sx={{ minWidth: 650, paddingTop: "20px" }}
+                aria-label="simple table"
+              >
+                <TableHead>
+                  <TableRow>
+                    <TableCell align="right">Song Name</TableCell>
+                    <TableCell align="right">Singer </TableCell>
+                    <TableCell align="right">music</TableCell>
+                    <TableCell align="right">lyrics</TableCell>
+                    <TableCell align="right">movie</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {Object.keys(data).map((id, index) => {
+                    return (
+                      <TableRow
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        <TableCell component="th" scope="row" key={id}>
+                          {index + 1}
+                        </TableCell>
+                        <TableCell align="right">{data[id].song}</TableCell>
+
+                        <TableCell align="right"></TableCell>
+                        <TableCell></TableCell>
+                        <TableCell align="right"></TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </Box>
         </Modal>
       </div>

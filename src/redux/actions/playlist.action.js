@@ -24,6 +24,10 @@ export const FETCH_PLAYLIST = "FETCH_PLAYLIST";
 export const UPDATE_PLAYLIST = "UPDATE_PLAYLIST";
 export const DELETE_PLAYLIST = "DELETE_PLAYLIST";
 
+export const GET_PLAYLIST_SONG_START = "GET_PLAYLIST_SONG_START";
+export const GET_PLAYLIST_SONG_SUCCESS = "GET_PLAYLIST_SONG_START";
+export const GET_PLAYLIST_SONG_FAIL = "GET_PLAYLIST_SONG_START";
+
 const getPlaylistStart = () => ({
   type: "GET_PLAYLIST_START",
 });
@@ -78,6 +82,19 @@ const addPlaylistSong = (data) => ({
   payload: data,
 });
 
+const getPlaylistSongStart = () => ({
+  type: "GET_PLAYLIST_START",
+});
+
+const getPlaylistSongSuccess = (playlist) => ({
+  type: "GET_PLAYLIST_SUCCESS",
+  payload: playlist,
+});
+
+const getPlaylistSongFail = () => ({
+  type: "GET_PLAYLIST_FAIL",
+});
+
 const updatePlaylistSuccessSong = (playlist) => ({
   type: "UPDATE_SONG_PLAYLIST",
   payload: playlist,
@@ -99,6 +116,23 @@ export const getPlaylistInitiate = () => {
         }
       } catch (error) {
         dispatch(getPlaylistFail(error));
+      }
+    });
+  };
+};
+
+export const getPlaylistSongInitiate = () => {
+  return function (dispatch) {
+    dispatch(getPlaylistSongStart());
+    rootRef.child("playlist").on("value", (snapshot) => {
+      try {
+        if (snapshot.val() !== null) {
+          dispatch(getPlaylistSongSuccess(snapshot.val()));
+        } else {
+          dispatch(getPlaylistSongSuccess({}));
+        }
+      } catch (error) {
+        dispatch(getPlaylistSongFail(error));
       }
     });
   };
@@ -145,7 +179,7 @@ export const addSongPlaylist = (newplaylist, songs) => {
         dispatch(
           addPlaylistSong({
             playlistID: Object.keys(newplaylist)[0],
-            songID: Object.keys(songs)[0],
+            songID: songs,
           })
         );
       });

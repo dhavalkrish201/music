@@ -10,6 +10,7 @@ const initialState = {
 const playlistReducer = (state = initialState, action) => {
   switch (action.type) {
     case "GET_PLAYLIST_START":
+    case "GET_PLAYLIST_SONG_START":
       return {
         ...state,
         loading: true,
@@ -25,6 +26,7 @@ const playlistReducer = (state = initialState, action) => {
       };
 
     case "GET_PLAYLIST_SUCCESS":
+    case "GET_PLAYLIST_SONG_SUCCESS":
       return {
         ...state,
         loading: false,
