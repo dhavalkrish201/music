@@ -100,6 +100,7 @@ const Dashboard = () => {
 
   const [initialState, setState] = useState(songDetails); //initialState
   const [data, setData] = useState({});
+  const [playlist, setPlayList] = useState();
   console.log("update data", data);
   const { song, singer, music, lyrics, movie } = initialState;
 
@@ -133,6 +134,7 @@ const Dashboard = () => {
 
   const handleChange = (e) => {
     let { name, value } = e.target;
+    setPlayList(value);
     setState({ ...initialState, [name]: value });
   };
 
@@ -194,9 +196,9 @@ const Dashboard = () => {
     dispatch(getPlaylistInitiate());
   }, []);
 
-  const SubmitPlaylistSong = (id) => {
-    console.log("id--->", id);
-    dispatch(addSongPlaylist(data, id));
+  const SubmitPlaylistSong = (id, pdata) => {
+    console.log("pdata--->", pdata);
+    dispatch(addSongPlaylist(pdata, id));
     if (isEmpty(id)) {
       handleClose(true);
     }
@@ -464,7 +466,7 @@ const Dashboard = () => {
                 className="mysubmit"
                 onClick={() => {
                   console.log("KKKKKKK", selectedSongId);
-                  SubmitPlaylistSong(selectedSongId);
+                  SubmitPlaylistSong(selectedSongId, playlist);
                 }}
               >
                 Add

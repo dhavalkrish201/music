@@ -1,4 +1,4 @@
-import { rootRef } from "../../firebase";
+import { fireDb, rootRef } from "../../firebase";
 export const GET_PLAYLIST_START = "GET_PLAYLIST_START";
 export const GET_PLAYLIST_SUCCESS = "GET_PLAYLIST_SUCCESS";
 export const GET_PLAYLIST_FAIL = "GET_PLAYLIST_FAIL";
@@ -172,10 +172,11 @@ export const addSongPlaylist = (newplaylist, songs) => {
     //     songID: Object.keys(songs)[0],
     //   })
     // );
-    newplaylist.songs = [Object.keys(songs)[0]];
-    rootRef
-      .child(`playlist/${Object.keys(newplaylist)[0]}`)
-      .set(newplaylist, (error) => {
+    // newplaylist.songs = [Object.keys(songs)[0]];
+    fireDb
+      .database()
+      .ref(`playlist/${newplaylist}`)
+      .update({ playlistSong: [songs] }, (error) => {
         dispatch(
           addPlaylistSong({
             playlistID: Object.keys(newplaylist)[0],

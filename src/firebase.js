@@ -18,4 +18,4 @@ export const rootRef = fireDb.database().ref();
 const auth = firebase.auth();
 const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
 const facebookAuthProvider = new firebase.auth.FacebookAuthProvider();
-export { auth, googleAuthProvider, facebookAuthProvider };
+export { auth, googleAuthProvider, facebookAuthProvider, fireDb };
